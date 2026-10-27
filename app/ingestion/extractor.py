@@ -39,7 +39,12 @@ def extract_text(path: Path, tika_url: str) -> str:
     except OSError as error:
         raise ExtractionError(f"Could not read '{path.name}': {error}") from error
 
-    content_type = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
+    return extract_bytes(path.name, document_bytes, tika_url)
+
+
+def extract_bytes(filename: str, document_bytes: bytes, tika_url: str) -> str:
+    """Send in-memory document bytes to Tika and return normalized Markdown."""
+    content_type = mimetypes.guess_type(filename)[0] or "application/octet-stream"
     request_url = tika_url.rstrip("/") + "/tika/md"
 
     try:
@@ -54,12 +59,12 @@ def extract_text(path: Path, tika_url: str) -> str:
         )
         response.raise_for_status()
     except httpx.HTTPError as error:
-        raise ExtractionError(f"Tika could not extract '{path.name}': {error}") from error
+        raise ExtractionError(f"Tika could not extract '{filename}': {error}") from error
 
     extracted_text = normalize_text(response.text)
 
     if not extracted_text:
-        raise ExtractionError(f"Tika returned no text for '{path.name}'")
+        raise ExtractionError(f"Tika returned no text for '{filename}'")
 
     return extracted_text
 

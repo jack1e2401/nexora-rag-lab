@@ -49,11 +49,14 @@
 | `app/config.py` | Typed environment settings and defaults. |
 | `app/database.py` | psycopg connection and small schema/profile helpers. |
 | `app/embeddings.py` | One lazy BGE-M3 loader/tokenizer and identical passage/query embedding settings. |
-| `app/main.py` | FastAPI request/response models and three routes. |
+| `app/main.py` | FastAPI entry point and health route. |
+| `app/lab_api.py` | Swagger endpoints for extraction, token inspection, chunking, and embedding. |
 | `app/tika.py` | Apache Tika health check and HTTP helpers. |
 | `app/ingestion/extractor.py` | Tika 4 Markdown extraction and structure-preserving text normalization. |
 | `app/ingestion/chunking/chunk_types.py` | Shared chunk settings, source-span result, and strategy interface. |
-| `app/ingestion/chunking/chunk_helpers.py` | Token counts, tokenizer offsets, fixed token ranges, and checked chunk creation. |
+| `app/ingestion/chunking/utils/token_utils.py` | Count content and special tokens. |
+| `app/ingestion/chunking/utils/text_ranges.py` | Map tokenizer positions to source character ranges. |
+| `app/ingestion/chunking/utils/chunk_utils.py` | Create and validate chunks from source character ranges. |
 | `app/ingestion/chunking/fixed_token_strategy.py` | Fixed-token strategy and the original helper wrapper. |
 | `app/ingestion/chunking/recursive_strategy.py` | Separator-aware splitting and range packing. |
 | `app/ingestion/chunking/markdown_structure_strategy.py` | Markdown section splitting and fallback reporting. |
@@ -85,7 +88,7 @@
 
 **Files:** Create `app/embeddings.py`, `app/ingestion/__init__.py`, `app/ingestion/extractor.py`, and the `app/ingestion/chunking/` package; keep `app/ingestion/chunker.py` as a compatibility module. Test `tests/test_extractor.py`, `tests/test_chunker.py`, and `tests/test_embeddings.py`.
 
-**Interfaces:** `extract_text(path: Path, tika_url: str) -> str` uses `PUT /tika/md`; `normalize_text(text: str) -> str`; `get_embedder(settings: Settings) -> SentenceTransformer` returns a process-cached CPU model; `get_tokenizer(settings: Settings) -> PreTrainedTokenizerBase`; `embed_passages(texts: list[str], settings: Settings) -> list[list[float]]`; `embed_query(text: str, settings: Settings) -> list[float]`; `ChunkSlice(ordinal: int, text: str, token_count: int, start_offset: int, end_offset: int, fallback_reason: str | None)`; `ChunkingSettings(chunk_size: int, overlap: int, max_input_tokens: int = 1200)`; `ChunkingStrategy.split(text: str, tokenizer: PreTrainedTokenizerBase, settings: ChunkingSettings) -> list[ChunkSlice]`; explicit strategies `FixedTokenStrategy`, `RecursiveStrategy`, and `DocumentStructureStrategy`, selected by `get_chunking_strategy(strategy_id: str) -> ChunkingStrategy`.
+**Interfaces:** `extract_text(path: Path, tika_url: str) -> str` and `extract_bytes(filename: str, document_bytes: bytes, tika_url: str) -> str` use `PUT /tika/md`; `normalize_text(text: str) -> str`; `get_embedder(settings: Settings) -> SentenceTransformer` returns a process-cached CPU model; `get_tokenizer(settings: Settings) -> PreTrainedTokenizerBase`; `embed_passages(texts: list[str], settings: Settings) -> list[list[float]]`; `embed_query(text: str, settings: Settings) -> list[float]`; `ChunkSlice(order: int, text: str, token_count: int, start_char: int, end_char: int, fallback_reason: str | None)`; `ChunkingSettings(chunk_size: int, overlap: int, max_input_tokens: int = 1200)`; `ChunkingStrategy.split(text: str, tokenizer: PreTrainedTokenizerBase, settings: ChunkingSettings) -> list[ChunkSlice]`; explicit strategies `FixedTokenStrategy`, `RecursiveStrategy`, and `DocumentStructureStrategy`, selected by `get_chunking_strategy(strategy_id: str) -> ChunkingStrategy`.
 
 - [x] **Step 1: Write failing tests.** Existing tests cover Tika extraction, Vietnamese fixed-token overlap, embedding dimensions, and invalid overlap. Add strategy tests for exact source spans, maximum token count, deterministic output, recursive separator preference, and heading/list/table preservation.
 - [x] **Step 2: Run `python -m pytest tests/test_extractor.py tests/test_chunker.py tests/test_embeddings.py -q`.** Expected: failures for missing functions.
