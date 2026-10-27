@@ -2,6 +2,8 @@ from io import BytesIO
 from types import SimpleNamespace
 
 from fastapi import UploadFile
+from pydantic import ValidationError
+import pytest
 
 from app import embeddings, lab_api
 from app.config import Settings
@@ -40,30 +42,30 @@ def get_endpoint(path):
     endpoints = {
         "/ingestion/extract": lab_api.extract_document,
         "/tokenization/inspect": lab_api.inspect_tokens,
-        "/chunking/split": lab_api.split_markdown,
+        "/chunking/split": lab_api.split_text,
         "/embeddings/embed": lab_api.create_embeddings,
     }
     return endpoints[path]
 
 
-def test_extract_endpoint_returns_markdown_without_saving_file(monkeypatch):
+def test_extract_endpoint_returns_plain_text_without_saving_file(monkeypatch):
     monkeypatch.setattr(
         extractor,
         "extract_bytes",
-        lambda filename, content, tika_url: "# A Markdown heading",
+        lambda filename, content, tika_url: "A plain text heading",
         raising=False,
     )
     endpoint = get_endpoint("/ingestion/extract")
     upload = UploadFile(
         file=BytesIO(b"document bytes"),
-        filename="guide.md",
+        filename="guide.txt",
     )
     response = endpoint(upload, make_settings())
 
     assert response == {
-        "filename": "guide.md",
-        "character_count": len("# A Markdown heading"),
-        "markdown": "# A Markdown heading",
+        "filename": "guide.txt",
+        "character_count": len("A plain text heading"),
+        "text": "A plain text heading",
     }
 
 
@@ -107,7 +109,7 @@ def test_chunk_endpoint_returns_chunk_text_and_character_positions(monkeypatch):
     monkeypatch.setattr(embeddings, "get_tokenizer", lambda settings: FakeTokenizer())
     endpoint = get_endpoint("/chunking/split")
     request = SimpleNamespace(
-        markdown="abcdefghijklmno",
+        text="abcdefghijklmno",
         strategy="fixed_token",
         chunk_size=8,
         overlap=2,
@@ -140,6 +142,17 @@ def test_chunk_endpoint_returns_chunk_text_and_character_positions(monkeypatch):
             "fallback_reason": None,
         },
     ]
+
+
+def test_chunk_request_only_accepts_fixed_token_strategy():
+    request = lab_api.ChunkRequest(text="source text", strategy="fixed_token")
+    assert request.strategy == "fixed_token"
+
+    with pytest.raises(ValidationError):
+        lab_api.ChunkRequest(text="source text", strategy="recursive")
+
+    with pytest.raises(ValidationError):
+        lab_api.ChunkRequest(text="source text", strategy="document_structure")
 
 
 def test_embedding_endpoint_returns_vectors_and_dimension(monkeypatch):

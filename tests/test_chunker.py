@@ -4,9 +4,7 @@ import pytest
 
 from app.ingestion.chunker import (
     ChunkingSettings,
-    DocumentStructureStrategy,
     FixedTokenStrategy,
-    RecursiveStrategy,
     chunk_text,
     get_chunking_strategy,
 )
@@ -132,80 +130,24 @@ def test_fixed_strategy_chunks_keep_exact_source_spans():
         assert chunk.token_count <= 8
 
 
-def test_recursive_strategy_splits_at_paragraph_boundary():
-    text = "one two.\n\nthree four."
-    strategy = RecursiveStrategy()
-
-    chunks = strategy.split(
-        text,
-        CharacterTokenizer(),
-        ChunkingSettings(chunk_size=15, overlap=0),
-    )
-
-    assert len(chunks) == 2
-    assert chunks[0].text.startswith("one two.")
-    assert "three" not in chunks[0].text
-    assert chunks[1].text.startswith("three four.")
-
-
-def test_document_structure_strategy_keeps_heading_with_table_and_list():
-    text = "# First\nIntro\n\n# Second\n| A | B |\n| --- | --- |\n| 1 | 2 |\n\n- item one\n- item two"
-    strategy = DocumentStructureStrategy()
-
-    chunks = strategy.split(
-        text,
-        CharacterTokenizer(),
-        ChunkingSettings(chunk_size=75, overlap=0),
-    )
-
-    first_section = next(chunk for chunk in chunks if chunk.text.startswith("# First"))
-    second_section = next(chunk for chunk in chunks if chunk.text.startswith("# Second"))
-
-    assert "Intro" in first_section.text
-    assert "| 1 | 2 |" in second_section.text
-    assert "- item one\n- item two" in second_section.text
-    assert text[first_section.start_char : first_section.end_char] == first_section.text
-    assert text[second_section.start_char : second_section.end_char] == second_section.text
-    assert first_section.fallback_reason is None
-    assert second_section.fallback_reason is None
-
-
-def test_document_structure_reports_recursive_fallback_without_headings():
-    chunks = DocumentStructureStrategy().split(
-        "A paragraph without a Markdown heading.",
-        CharacterTokenizer(),
-        ChunkingSettings(chunk_size=18, overlap=0),
-    )
-
-    assert chunks
-    assert all(chunk.fallback_reason == "no_markdown_headings" for chunk in chunks)
-
-
-def test_all_strategies_cover_every_non_whitespace_character():
+def test_fixed_strategy_covers_every_non_whitespace_character():
     text = "Heading\n\nA sentence with punctuation.\nA second sentence."
-    strategies = [
-        FixedTokenStrategy(),
-        RecursiveStrategy(),
-        DocumentStructureStrategy(),
-    ]
+    chunks = FixedTokenStrategy().split(
+        text,
+        CharacterTokenizer(),
+        ChunkingSettings(chunk_size=18, overlap=3),
+    )
+    covered_positions = set()
 
-    for strategy in strategies:
-        chunks = strategy.split(
-            text,
-            CharacterTokenizer(),
-            ChunkingSettings(chunk_size=18, overlap=3),
-        )
-        covered_positions = set()
+    for chunk in chunks:
+        assert text[chunk.start_char : chunk.end_char] == chunk.text
+        assert chunk.token_count <= 18
+        assert chunk.token_count + 2 <= 1200
+        covered_positions.update(range(chunk.start_char, chunk.end_char))
 
-        for chunk in chunks:
-            assert text[chunk.start_char : chunk.end_char] == chunk.text
-            assert chunk.token_count <= 18
-            assert chunk.token_count + 2 <= 1200
-            covered_positions.update(range(chunk.start_char, chunk.end_char))
-
-        for index, character in enumerate(text):
-            if not character.isspace():
-                assert index in covered_positions
+    for index, character in enumerate(text):
+        if not character.isspace():
+            assert index in covered_positions
 
 
 def test_fixed_strategy_rejects_missing_token_character_positions():
@@ -219,14 +161,9 @@ def test_fixed_strategy_rejects_missing_token_character_positions():
 
 def test_strategy_lookup_returns_explicit_strategies():
     assert isinstance(get_chunking_strategy("fixed_token"), FixedTokenStrategy)
-    assert isinstance(get_chunking_strategy("recursive"), RecursiveStrategy)
-    assert isinstance(
-        get_chunking_strategy("document_structure"),
-        DocumentStructureStrategy,
-    )
-
-    with pytest.raises(ValueError, match="Unknown chunking strategy"):
-        get_chunking_strategy("semantic")
+    for removed_strategy in ("recursive", "document_structure", "semantic"):
+        with pytest.raises(ValueError, match="Unknown chunking strategy"):
+            get_chunking_strategy(removed_strategy)
 
 
 def test_chunking_package_and_compatibility_module_share_public_classes():
@@ -249,8 +186,6 @@ def test_chunking_modules_have_descriptive_names():
         "app.ingestion.chunking.utils.text_ranges",
         "app.ingestion.chunking.utils.chunk_utils",
         "app.ingestion.chunking.fixed_token_strategy",
-        "app.ingestion.chunking.recursive_strategy",
-        "app.ingestion.chunking.markdown_structure_strategy",
     ]
 
     for module_name in module_names:

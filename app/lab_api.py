@@ -19,8 +19,8 @@ class TextRequest(BaseModel):
 
 
 class ChunkRequest(BaseModel):
-    markdown: str = Field(min_length=1)
-    strategy: Literal["fixed_token", "recursive", "document_structure"] = "fixed_token"
+    text: str = Field(min_length=1)
+    strategy: Literal["fixed_token"] = "fixed_token"
     chunk_size: int = Field(default=500, gt=0)
     overlap: int = Field(default=50, ge=0)
 
@@ -40,7 +40,7 @@ def extract_document(
     file: UploadFile = File(...),
     settings: Settings = Depends(get_settings),
 ) -> dict[str, str | int]:
-    """Extract one uploaded document to Markdown without saving the file."""
+    """Extract one uploaded document to plain text without saving the file."""
     filename = file.filename or "uploaded-document"
     document_bytes = file.file.read()
 
@@ -48,14 +48,14 @@ def extract_document(
         raise HTTPException(status_code=400, detail="The uploaded file is empty")
 
     try:
-        markdown = extractor.extract_bytes(filename, document_bytes, settings.tika_url)
+        text = extractor.extract_bytes(filename, document_bytes, settings.tika_url)
     except extractor.ExtractionError as error:
         raise HTTPException(status_code=502, detail=str(error)) from error
 
     return {
         "filename": filename,
-        "character_count": len(markdown),
-        "markdown": markdown,
+        "character_count": len(text),
+        "text": text,
     }
 
 
@@ -100,11 +100,11 @@ def inspect_tokens(
 
 
 @router.post("/chunking/split", tags=["Step 3 - Chunk"])
-def split_markdown(
+def split_text(
     request: ChunkRequest,
     settings: Settings = Depends(get_settings),
 ) -> dict[str, object]:
-    """Split Markdown and return every chunk with its size and source positions."""
+    """Split plain text and return chunks with source character positions."""
     tokenizer = embeddings.get_tokenizer(settings)
     strategy = get_chunking_strategy(request.strategy)
     chunk_settings = ChunkingSettings(
@@ -112,7 +112,7 @@ def split_markdown(
         overlap=request.overlap,
         max_input_tokens=settings.bge_max_input_tokens,
     )
-    chunks = strategy.split(request.markdown, tokenizer, chunk_settings)
+    chunks = strategy.split(request.text, tokenizer, chunk_settings)
 
     return {
         "strategy": request.strategy,

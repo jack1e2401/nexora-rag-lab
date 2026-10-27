@@ -1,5 +1,7 @@
 # Nexora RAG Lab — Chunking Strategy Comparison Design
 
+> Superseded by [Plain-Text Extraction and Two Chunkers](2026-10-27-plain-text-two-chunkers-design.md). The strategy choices below are retained only as historical context.
+
 **Date:** 2026-10-27
 **Status:** Approved for implementation
 **Relation:** This document updates the chunking and evaluation decisions in the [original RAG Lab design](2026-10-26-nexora-rag-lab-design.md). Its other stack and scope decisions still apply.

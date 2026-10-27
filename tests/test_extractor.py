@@ -12,7 +12,7 @@ class FakeResponse:
         return None
 
 
-def test_tika_markdown_endpoint_returns_vietnamese_text(tmp_path, monkeypatch):
+def test_tika_plain_text_endpoint_returns_vietnamese_text(tmp_path, monkeypatch):
     document_path = tmp_path / "quy_dinh.txt"
     document_path.write_text("Bộ phận kinh doanh chịu trách nhiệm.", encoding="utf-8")
     request = {}
@@ -31,10 +31,28 @@ def test_tika_markdown_endpoint_returns_vietnamese_text(tmp_path, monkeypatch):
         "http://localhost:9998/",
     )
 
-    assert request["url"] == "http://localhost:9998/tika/md"
+    assert request["url"] == "http://localhost:9998/tika/text"
     assert request["content"] == document_path.read_bytes()
-    assert request["headers"]["Accept"] == "text/markdown"
     assert extracted_text == "Bộ phận kinh doanh chịu trách nhiệm."
+
+
+def test_docx_plain_text_extraction_avoids_markdown_request(monkeypatch):
+    def fake_put(url, content, headers, timeout):
+        if url.endswith("/tika/md") or headers.get("Accept") == "text/markdown":
+            request = httpx.Request("PUT", url)
+            return httpx.Response(406, request=request)
+
+        return FakeResponse("Teenagers\nTest questions")
+
+    monkeypatch.setattr(extractor.httpx, "put", fake_put)
+
+    text = extractor.extract_bytes(
+        "English_8_15min_Teenagers.docx",
+        b"document bytes",
+        "http://localhost:9998",
+    )
+
+    assert text == "Teenagers\nTest questions"
 
 
 def test_empty_extraction_raises_file_specific_error(tmp_path, monkeypatch):
@@ -71,9 +89,9 @@ def test_normalize_text_preserves_paragraphs_and_unicode():
     assert normalized == "Các mục\nquan trọng.\n\nMục tiếp theo."
 
 
-def test_normalize_markdown_preserves_structure_and_list_indentation():
-    raw_text = "# Heading  \r\n\r\n- parent\r\n  - child  \r\n\r\n| A | B |  \r\n"
+def test_normalize_text_preserves_line_indentation():
+    raw_text = "Heading  \r\n\r\nparent\r\n  child  \r\n\r\nA | B  \r\n"
 
     normalized = extractor.normalize_text(raw_text)
 
-    assert normalized == "# Heading\n\n- parent\n  - child\n\n| A | B |"
+    assert normalized == "Heading\n\nparent\n  child\n\nA | B"

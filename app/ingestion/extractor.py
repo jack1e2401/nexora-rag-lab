@@ -1,4 +1,4 @@
-"""Extract and normalize document text through Apache Tika."""
+"""Extract and normalize plain document text through Apache Tika."""
 
 import mimetypes
 import unicodedata
@@ -12,7 +12,7 @@ class ExtractionError(Exception):
 
 
 def normalize_text(text: str) -> str:
-    """Normalize Unicode and line endings while preserving Markdown structure."""
+    """Normalize Unicode and line endings while keeping text line breaks."""
     normalized_text = unicodedata.normalize("NFC", text)
     normalized_text = normalized_text.replace("\r\n", "\n").replace("\r", "\n")
 
@@ -33,7 +33,7 @@ def normalize_text(text: str) -> str:
 
 
 def extract_text(path: Path, tika_url: str) -> str:
-    """Send one document to Tika's Markdown endpoint and return normalized text."""
+    """Read one document and return normalized plain text from Tika."""
     try:
         document_bytes = path.read_bytes()
     except OSError as error:
@@ -43,18 +43,15 @@ def extract_text(path: Path, tika_url: str) -> str:
 
 
 def extract_bytes(filename: str, document_bytes: bytes, tika_url: str) -> str:
-    """Send in-memory document bytes to Tika and return normalized Markdown."""
+    """Send in-memory document bytes to Tika and return normalized plain text."""
     content_type = mimetypes.guess_type(filename)[0] or "application/octet-stream"
-    request_url = tika_url.rstrip("/") + "/tika/md"
+    request_url = tika_url.rstrip("/") + "/tika/text"
 
     try:
         response = httpx.put(
             request_url,
             content=document_bytes,
-            headers={
-                "Accept": "text/markdown",
-                "Content-Type": content_type,
-            },
+            headers={"Content-Type": content_type},
             timeout=60.0,
         )
         response.raise_for_status()
@@ -70,4 +67,4 @@ def extract_bytes(filename: str, document_bytes: bytes, tika_url: str) -> str:
 
 
 # https://tika.apache.org/docs/4.1.x/using-tika/server/index.html
-# Tika 4.1 supports PUT /tika/md and returns the document as Markdown.
+# Tika 4.1 supports PUT /tika/text and returns plain document text.
