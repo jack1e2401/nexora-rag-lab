@@ -48,7 +48,7 @@ Ingestion applies `sql/schema.sql` automatically. The first profile initializes 
 .\.venv\Scripts\python.exe -m scripts.ingest --profile fixed_1000_100 --chunk-size 1000 --overlap 100
 ```
 
-Each run prints the corpus fingerprint and document/chunk totals. Ingestion extracts with Tika, chunks in BGE tokens, embeds locally, then stores a complete profile in one database transaction. If a later run detects changed source files, use `--reset-corpus` to replace all profiles together. Reingesting an unchanged corpus into one profile replaces only that profile.
+Each run prints the corpus fingerprint and document/chunk totals. Ingestion extracts with Tika, chunks in BGE tokens, embeds locally, then stores a complete profile in one database transaction. If a later run detects changed source files or different Tika text for the same file, use `--reset-corpus` to replace all profiles together. Reingesting an unchanged corpus into one profile replaces only that profile.
 
 `--reset-corpus` deletes every stored profile, its chunks, and the current documents before saving the selected corpus. Use it only when intentionally switching the corpus.
 

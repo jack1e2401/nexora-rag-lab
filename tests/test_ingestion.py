@@ -1,9 +1,11 @@
 import json
 from pathlib import Path
+from unittest.mock import Mock
 
 import pytest
 
 from app.config import Settings
+from app.ingestion import pipeline as ingestion
 from app.ingestion.pipeline import corpus_fingerprint, load_manifest, validate_vector
 
 
@@ -40,3 +42,13 @@ def test_vector_validation_rejects_wrong_width_and_nan():
         validate_vector([0.1], settings)
     with pytest.raises(ValueError, match="finite"):
         validate_vector([float("nan")] * 1024, settings)
+
+
+def test_ingestion_rejects_changed_extracted_text_for_existing_document(tmp_path):
+    connection = Mock()
+    connection.execute.return_value.fetchall.return_value = [("document-1", "old text")]
+    source = ingestion.SourceDocument("document-1", "board-1", tmp_path / "source.txt", "source.txt")
+    prepared = ingestion.PreparedDocument(source, "same-file-hash", "new text", [], [])
+
+    with pytest.raises(ValueError, match="extracted text changed"):
+        ingestion._check_existing_extractions(connection, [prepared])

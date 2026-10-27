@@ -119,6 +119,21 @@ def _initialize_schema(connection: psycopg.Connection) -> None:
     register_vector(connection)
 
 
+def _check_existing_extractions(
+    connection: psycopg.Connection, prepared: list[PreparedDocument]
+) -> None:
+    """Keep stored source text stable while older profiles still reference it."""
+    rows = connection.execute("SELECT document_id, extracted_text FROM documents").fetchall()
+    stored_text = {document_id: text for document_id, text in rows}
+    for item in prepared:
+        document_id = item.source.document_id
+        if document_id in stored_text and stored_text[document_id] != item.text:
+            raise ValueError(
+                f"{document_id}: extracted text changed; rerun with --reset-corpus "
+                "to replace all profiles"
+            )
+
+
 def ingest_manifest(
     manifest_path: Path,
     profile_id: str,
@@ -153,6 +168,7 @@ def ingest_manifest(
             connection.execute("DELETE FROM profiles")
             connection.execute("DELETE FROM documents")
         else:
+            _check_existing_extractions(connection, prepared)
             connection.execute("DELETE FROM profiles WHERE profile_id = %s", (profile_id,))
 
         for item in prepared:
