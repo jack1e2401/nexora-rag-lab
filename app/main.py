@@ -5,11 +5,13 @@ from fastapi import FastAPI, HTTPException
 from app.config import Settings, get_settings
 from app.database import check_database
 from app.lab_api import router as lab_router
+from app.rag.api import router as rag_router
 from app.tika import check_tika
 
 
 app = FastAPI(title="Nexora RAG Lab")
 app.include_router(lab_router)
+app.include_router(rag_router)
 
 
 @app.get("/health")
