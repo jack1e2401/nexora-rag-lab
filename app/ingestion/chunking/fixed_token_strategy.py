@@ -2,8 +2,17 @@
 
 from typing import Any
 
-from app.ingestion.chunking.chunk_helpers import chunks_from_ranges, fixed_token_ranges
-from app.ingestion.chunking.chunk_types import ChunkSlice, ChunkingSettings, ChunkingStrategy
+from app.ingestion.chunking.chunk_types import (
+    ChunkSlice,
+    ChunkingSettings,
+    ChunkingStrategy,
+)
+from app.ingestion.chunking.utils.chunk_utils import (
+    create_chunks_from_character_ranges,
+)
+from app.ingestion.chunking.utils.text_ranges import (
+    get_fixed_token_chunk_character_ranges,
+)
 
 
 class FixedTokenStrategy(ChunkingStrategy):
@@ -17,8 +26,17 @@ class FixedTokenStrategy(ChunkingStrategy):
         tokenizer: Any,
         settings: ChunkingSettings,
     ) -> list[ChunkSlice]:
-        ranges = fixed_token_ranges(text, tokenizer, settings)
-        return chunks_from_ranges(text, ranges, tokenizer, settings)
+        character_ranges = get_fixed_token_chunk_character_ranges(
+            text,
+            tokenizer,
+            settings,
+        )
+        return create_chunks_from_character_ranges(
+            text,
+            character_ranges,
+            tokenizer,
+            settings,
+        )
 
 
 def chunk_text(

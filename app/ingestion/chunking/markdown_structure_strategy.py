@@ -3,9 +3,19 @@
 import re
 from typing import Any
 
-from app.ingestion.chunking.chunk_helpers import chunks_from_ranges, token_count
-from app.ingestion.chunking.chunk_types import ChunkSlice, ChunkingSettings, ChunkingStrategy
-from app.ingestion.chunking.recursive_strategy import pack_ranges, split_oversized_range
+from app.ingestion.chunking.chunk_types import (
+    ChunkSlice,
+    ChunkingSettings,
+    ChunkingStrategy,
+)
+from app.ingestion.chunking.recursive_strategy import (
+    pack_text_ranges,
+    split_oversized_text_range,
+)
+from app.ingestion.chunking.utils.chunk_utils import (
+    create_chunks_from_character_ranges,
+)
+from app.ingestion.chunking.utils.token_utils import count_tokens
 
 
 class DocumentStructureStrategy(ChunkingStrategy):
@@ -23,11 +33,17 @@ class DocumentStructureStrategy(ChunkingStrategy):
         headings = list(self.heading_pattern.finditer(text))
 
         if not headings:
-            units = split_oversized_range(text, 0, len(text), tokenizer, settings)
-            ranges = pack_ranges(text, units, tokenizer, settings)
-            return chunks_from_ranges(
+            text_ranges = split_oversized_text_range(
                 text,
-                ranges,
+                0,
+                len(text),
+                tokenizer,
+                settings,
+            )
+            packed_ranges = pack_text_ranges(text, text_ranges, tokenizer, settings)
+            return create_chunks_from_character_ranges(
+                text,
+                packed_ranges,
                 tokenizer,
                 settings,
                 fallback_reason="no_markdown_headings",
@@ -50,24 +66,24 @@ class DocumentStructureStrategy(ChunkingStrategy):
             section_text = text[section_start:section_end]
             fallback_reason = None
 
-            if token_count(section_text, tokenizer) > settings.chunk_size:
+            if count_tokens(section_text, tokenizer) > settings.chunk_size:
                 fallback_reason = "oversized_section"
 
-            units = split_oversized_range(
+            text_ranges = split_oversized_text_range(
                 text,
                 section_start,
                 section_end,
                 tokenizer,
                 settings,
             )
-            ranges = pack_ranges(text, units, tokenizer, settings)
-            section_chunks = chunks_from_ranges(
+            packed_ranges = pack_text_ranges(text, text_ranges, tokenizer, settings)
+            section_chunks = create_chunks_from_character_ranges(
                 text,
-                ranges,
+                packed_ranges,
                 tokenizer,
                 settings,
                 fallback_reason=fallback_reason,
-                ordinal_start=len(chunks),
+                order_start=len(chunks),
             )
             chunks.extend(section_chunks)
 

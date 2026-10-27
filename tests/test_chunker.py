@@ -125,9 +125,10 @@ def test_fixed_strategy_chunks_keep_exact_source_spans():
     )
 
     assert [chunk.text for chunk in chunks] == ["abcdefgh", "ghijklmn", "mno"]
+    assert [chunk.order for chunk in chunks] == [0, 1, 2]
 
     for chunk in chunks:
-        assert text[chunk.start_offset : chunk.end_offset] == chunk.text
+        assert text[chunk.start_char : chunk.end_char] == chunk.text
         assert chunk.token_count <= 8
 
 
@@ -163,8 +164,8 @@ def test_document_structure_strategy_keeps_heading_with_table_and_list():
     assert "Intro" in first_section.text
     assert "| 1 | 2 |" in second_section.text
     assert "- item one\n- item two" in second_section.text
-    assert text[first_section.start_offset : first_section.end_offset] == first_section.text
-    assert text[second_section.start_offset : second_section.end_offset] == second_section.text
+    assert text[first_section.start_char : first_section.end_char] == first_section.text
+    assert text[second_section.start_char : second_section.end_char] == second_section.text
     assert first_section.fallback_reason is None
     assert second_section.fallback_reason is None
 
@@ -197,18 +198,18 @@ def test_all_strategies_cover_every_non_whitespace_character():
         covered_positions = set()
 
         for chunk in chunks:
-            assert text[chunk.start_offset : chunk.end_offset] == chunk.text
+            assert text[chunk.start_char : chunk.end_char] == chunk.text
             assert chunk.token_count <= 18
             assert chunk.token_count + 2 <= 1200
-            covered_positions.update(range(chunk.start_offset, chunk.end_offset))
+            covered_positions.update(range(chunk.start_char, chunk.end_char))
 
         for index, character in enumerate(text):
             if not character.isspace():
                 assert index in covered_positions
 
 
-def test_fixed_strategy_rejects_incomplete_token_offsets():
-    with pytest.raises(ValueError, match="source offsets"):
+def test_fixed_strategy_rejects_missing_token_character_positions():
+    with pytest.raises(ValueError, match="positions for every token"):
         FixedTokenStrategy().split(
             "text",
             MissingOffsetTokenizer(),
@@ -244,7 +245,9 @@ def test_chunking_package_and_compatibility_module_share_public_classes():
 def test_chunking_modules_have_descriptive_names():
     module_names = [
         "app.ingestion.chunking.chunk_types",
-        "app.ingestion.chunking.chunk_helpers",
+        "app.ingestion.chunking.utils.token_utils",
+        "app.ingestion.chunking.utils.text_ranges",
+        "app.ingestion.chunking.utils.chunk_utils",
         "app.ingestion.chunking.fixed_token_strategy",
         "app.ingestion.chunking.recursive_strategy",
         "app.ingestion.chunking.markdown_structure_strategy",
@@ -252,3 +255,22 @@ def test_chunking_modules_have_descriptive_names():
 
     for module_name in module_names:
         importlib.import_module(module_name)
+
+
+def test_chunking_utility_functions_have_clear_names():
+    token_utils = importlib.import_module(
+        "app.ingestion.chunking.utils.token_utils"
+    )
+    chunk_utils = importlib.import_module(
+        "app.ingestion.chunking.utils.chunk_utils"
+    )
+    text_ranges = importlib.import_module(
+        "app.ingestion.chunking.utils.text_ranges"
+    )
+
+    assert callable(token_utils.count_tokens)
+    assert callable(token_utils.count_special_tokens)
+    assert callable(text_ranges.get_token_character_offsets)
+    assert callable(text_ranges.get_fixed_token_chunk_character_ranges)
+    assert callable(chunk_utils.create_chunk)
+    assert callable(chunk_utils.create_chunks_from_character_ranges)

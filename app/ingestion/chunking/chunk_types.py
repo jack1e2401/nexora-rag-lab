@@ -27,11 +27,11 @@ class ChunkingSettings:
 class ChunkSlice:
     """One chunk and its character range in the canonical source text."""
 
-    ordinal: int
+    order: int
     text: str
     token_count: int
-    start_offset: int
-    end_offset: int
+    start_char: int
+    end_char: int
     fallback_reason: str | None = None
 
 
