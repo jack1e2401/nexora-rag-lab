@@ -1,0 +1,215 @@
+{
+  "benchmark_version": "v1.0-synthetic-2026-10-25",
+  "fixed_reference_as_of": "2026-10-26",
+  "note": "Dữ liệu mô phỏng. Các tài liệu nguồn tạo một thế giới nghiệp vụ đóng; không là dữ kiện ngoài đời.",
+  "total_source_documents": 24,
+  "total_eval_cases": 300,
+  "domains": [
+    {
+      "domain": "MERCURY",
+      "board_id": "board-mercury",
+      "domain_name": "IT - E-commerce",
+      "docs": [
+        {
+          "id": "M-SRS-01",
+          "title": "Đặc tả yêu cầu nghiệp vụ v1",
+          "date": "2026-09-01",
+          "format": "docx",
+          "path": "01_CORPUS/MERCURY/M-SRS-01__Dac_ta_yeu_cau_nghiep_vu_v1.docx"
+        },
+        {
+          "id": "M-PLAN-02",
+          "title": "Kế hoạch triển khai và mốc nghiệm thu",
+          "date": "2026-10-05",
+          "format": "pdf",
+          "path": "01_CORPUS/MERCURY/M-PLAN-02__Ke_hoach_trien_khai_va_moc_nghiem_thu.pdf"
+        },
+        {
+          "id": "M-MOM-03",
+          "title": "Biên bản họp về COD và gia hạn thanh toán",
+          "date": "2026-10-20",
+          "format": "docx",
+          "path": "01_CORPUS/MERCURY/M-MOM-03__Bien_ban_hop_ve_COD_va_gia_han_thanh_toan.docx"
+        },
+        {
+          "id": "M-MOM-04",
+          "title": "Ghi chú kỹ thuật về sự cố timeout",
+          "date": "2026-10-23",
+          "format": "txt",
+          "path": "01_CORPUS/MERCURY/M-MOM-04__Ghi_chu_ky_thuat_ve_su_co_timeout.txt"
+        },
+        {
+          "id": "M-CR-05",
+          "title": "Phiếu yêu cầu thay đổi nghiệp vụ",
+          "date": "2026-10-21",
+          "format": "docx",
+          "path": "01_CORPUS/MERCURY/M-CR-05__Phieu_yeu_cau_thay_doi_nghiep_vu.docx"
+        },
+        {
+          "id": "M-DEC-06",
+          "title": "Sổ quyết định chính thức của PM",
+          "date": "2026-10-24",
+          "format": "pdf",
+          "path": "01_CORPUS/MERCURY/M-DEC-06__So_quyet_dinh_chinh_thuc_cua_PM.pdf"
+        },
+        {
+          "id": "M-STATUS-07",
+          "title": "Báo cáo QA và trạng thái hạng mục",
+          "date": "2026-10-26",
+          "format": "docx",
+          "path": "01_CORPUS/MERCURY/M-STATUS-07__Bao_cao_QA_va_trang_thai_hang_muc.docx"
+        },
+        {
+          "id": "M-RISK-08",
+          "title": "Chính sách rủi ro và an toàn thanh toán",
+          "date": "2026-10-26",
+          "format": "docx",
+          "path": "01_CORPUS/MERCURY/M-RISK-08__Chinh_sach_rui_ro_va_an_toan_thanh_toan.docx"
+        }
+      ]
+    },
+    {
+      "domain": "AURORA",
+      "board_id": "board-aurora",
+      "domain_name": "IT - EdTech Mobile",
+      "docs": [
+        {
+          "id": "A-SRS-01",
+          "title": "Yêu cầu MVP ứng dụng học tập",
+          "date": "2026-09-04",
+          "format": "docx",
+          "path": "01_CORPUS/AURORA/A-SRS-01__Yeu_cau_MVP_ung_dung_hoc_tap.docx"
+        },
+        {
+          "id": "A-PLAN-02",
+          "title": "Lộ trình beta và phân công nhóm",
+          "date": "2026-10-08",
+          "format": "pdf",
+          "path": "01_CORPUS/AURORA/A-PLAN-02__Lo_trinh_beta_va_phan_cong_nhom.pdf"
+        },
+        {
+          "id": "A-MOM-03",
+          "title": "Biên bản họp về push và quiz",
+          "date": "2026-10-17",
+          "format": "docx",
+          "path": "01_CORPUS/AURORA/A-MOM-03__Bien_ban_hop_ve_push_va_quiz.docx"
+        },
+        {
+          "id": "A-MOM-04",
+          "title": "Nhật ký triage lỗi và yêu cầu người dùng",
+          "date": "2026-10-21",
+          "format": "txt",
+          "path": "01_CORPUS/AURORA/A-MOM-04__Nhat_ky_triage_loi_va_yeu_cau_nguoi_dung.txt"
+        },
+        {
+          "id": "A-CR-05",
+          "title": "Change Request beta và ngưỡng quiz",
+          "date": "2026-10-20",
+          "format": "docx",
+          "path": "01_CORPUS/AURORA/A-CR-05__Change_Request_beta_va_nguong_quiz.docx"
+        },
+        {
+          "id": "A-DEC-06",
+          "title": "Decision Log scope và release gate",
+          "date": "2026-10-23",
+          "format": "pdf",
+          "path": "01_CORPUS/AURORA/A-DEC-06__Decision_Log_scope_va_release_gate.pdf"
+        },
+        {
+          "id": "A-STATUS-07",
+          "title": "Báo cáo chất lượng beta tại ngày 26/10",
+          "date": "2026-10-26",
+          "format": "docx",
+          "path": "01_CORPUS/AURORA/A-STATUS-07__Bao_cao_chat_luong_beta_tai_ngay_26_10.docx"
+        },
+        {
+          "id": "A-POL-08",
+          "title": "Quy định dữ liệu và an toàn AI cho nền tảng học tập",
+          "date": "2026-10-26",
+          "format": "docx",
+          "path": "01_CORPUS/AURORA/A-POL-08__Quy_dinh_du_lieu_va_an_toan_AI_cho_nen_tang_hoc_tap.docx"
+        }
+      ]
+    },
+    {
+      "domain": "UNITECH",
+      "board_id": "board-unitech",
+      "domain_name": "Event Management",
+      "docs": [
+        {
+          "id": "E-SRS-01",
+          "title": "Yêu cầu nghiệp vụ tổ chức hội nghị",
+          "date": "2026-09-12",
+          "format": "docx",
+          "path": "01_CORPUS/UNITECH/E-SRS-01__Yeu_cau_nghiep_vu_to_chuc_hoi_nghi.docx"
+        },
+        {
+          "id": "E-PLAN-02",
+          "title": "Kế hoạch hội nghị, ngân sách và nhân sự",
+          "date": "2026-10-06",
+          "format": "pdf",
+          "path": "01_CORPUS/UNITECH/E-PLAN-02__Ke_hoach_hoi_nghi_ngan_sach_va_nhan_su.pdf"
+        },
+        {
+          "id": "E-MOM-03",
+          "title": "Biên bản họp nhà tài trợ và hậu cần",
+          "date": "2026-10-19",
+          "format": "docx",
+          "path": "01_CORPUS/UNITECH/E-MOM-03__Bien_ban_hop_nha_tai_tro_va_hau_can.docx"
+        },
+        {
+          "id": "E-MOM-04",
+          "title": "Biên bản đối soát đăng ký và giới hạn địa điểm",
+          "date": "2026-10-22",
+          "format": "txt",
+          "path": "01_CORPUS/UNITECH/E-MOM-04__Bien_ban_doi_soat_dang_ky_va_gioi_han_dia_diem.txt"
+        },
+        {
+          "id": "E-CR-05",
+          "title": "Phiếu thay đổi địa điểm và suất ăn",
+          "date": "2026-10-23",
+          "format": "docx",
+          "path": "01_CORPUS/UNITECH/E-CR-05__Phieu_thay_doi_dia_diem_va_suat_an.docx"
+        },
+        {
+          "id": "E-DEC-06",
+          "title": "Sổ quyết định hậu cần chính thức",
+          "date": "2026-10-24",
+          "format": "pdf",
+          "path": "01_CORPUS/UNITECH/E-DEC-06__So_quyet_dinh_hau_can_chinh_thuc.pdf"
+        },
+        {
+          "id": "E-STATUS-07",
+          "title": "Báo cáo vận hành và tài chính",
+          "date": "2026-10-26",
+          "format": "docx",
+          "path": "01_CORPUS/UNITECH/E-STATUS-07__Bao_cao_van_hanh_va_tai_chinh.docx"
+        },
+        {
+          "id": "E-RISK-08",
+          "title": "Kế hoạch ứng phó mưa và chính sách tài trợ",
+          "date": "2026-10-26",
+          "format": "docx",
+          "path": "01_CORPUS/UNITECH/E-RISK-08__Ke_hoach_ung_pho_mua_va_chinh_sach_tai_tro.docx"
+        }
+      ]
+    }
+  ],
+  "categories": {
+    "DIRECT": 36,
+    "MULTIHOP": 78,
+    "CONFLICT": 54,
+    "NUMERIC": 36,
+    "UNANSWERABLE": 36,
+    "SECURITY": 27,
+    "INJECTION": 15,
+    "TEMPORAL": 18
+  },
+  "splits": {
+    "SMOKE_60": 60,
+    "REGRESSION_120_cumulative": 120,
+    "HOLDOUT_180": 180,
+    "ALL_300": 300
+  },
+  "separate_agent_eval": "Not included: agent tool selection, structured DB queries, approval queue, HITL"
+}

@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS profiles (
     embedding_dimensions INTEGER NOT NULL CHECK (embedding_dimensions = 1024),
     embedding_settings JSONB NOT NULL DEFAULT '{}'::jsonb,
     corpus_fingerprint TEXT NOT NULL,
+    extraction_version TEXT NOT NULL DEFAULT 'tika-text-v1',
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -28,6 +29,8 @@ CREATE TABLE IF NOT EXISTS chunks (
     ordinal INTEGER NOT NULL CHECK (ordinal >= 0),
     text TEXT NOT NULL,
     token_count INTEGER NOT NULL CHECK (token_count > 0),
+    start_char INTEGER NOT NULL CHECK (start_char >= 0),
+    end_char INTEGER NOT NULL CHECK (end_char > start_char),
     embedding VECTOR(1024) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     UNIQUE (profile_id, document_id, ordinal)
@@ -35,3 +38,7 @@ CREATE TABLE IF NOT EXISTS chunks (
 
 CREATE INDEX IF NOT EXISTS chunks_profile_document_idx
     ON chunks (profile_id, document_id);
+
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS extraction_version TEXT NOT NULL DEFAULT 'tika-text-v1';
+ALTER TABLE chunks ADD COLUMN IF NOT EXISTS start_char INTEGER;
+ALTER TABLE chunks ADD COLUMN IF NOT EXISTS end_char INTEGER;

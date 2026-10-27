@@ -1,0 +1,22 @@
+BIÊN BẢN ĐỐI SOÁT ĐĂNG KÝ VÀ GIỚI HẠN ĐỊA ĐIỂM
+Mã tài liệu: E-MOM-04 | Ngày: 2026-10-22
+NEXORA / DỮ LIỆU NGHIỆP VỤ MÔ PHỎNG
+==========================================================================
+
+TÌNH HÌNH ĐĂNG KÝ TẠI NGÀY 22/10
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- Hệ thống tiếp nhận 380 lượt gửi form đăng ký, nhưng chỉ có 360 người đăng ký duy nhất do 20 lượt form trùng.
+- Trong 360 đăng ký duy nhất, có 310 người đã xác nhận và 50 người còn đang chờ xác nhận.
+- Phương án bố trí có 25 nhân sự/tình nguyện viên và 10 diễn giả cần tính vào sức chứa.
+- Với 310 khách xác nhận cộng 25 nhân sự và 10 diễn giả, tổng phương án là 345 người so với giới hạn 350.
+- Chưa thể kết luận 380 người sẽ tới; số người thực tế phải dựa dữ liệu check-in ngày 12/12.
+- Hội trường B được khảo sát với sức chứa 420 người nhưng chưa có phê duyệt chuyển địa điểm.
+- Nga đề nghị đóng xác nhận bổ sung khi tổng dự kiến vượt quá sức chứa được phê duyệt.
+- Số lượt trùng là số lượt form, không phải số khách xác nhận bị hủy.
+
+ĐIỀU KIỆN ĐỐI SOÁT
+~~~~~~~~~~~~~~~~~~
+- 350 trừ 345 còn 5 vị trí theo phương án hiện tại, nếu thành phần không thay đổi.
+- Nếu toàn bộ 360 người duy nhất cùng tham dự và giữ 35 nhân sự/diễn giả, tổng sẽ là 395, vượt sức chứa 45.
+- Số người đang chờ xác nhận là 50, không được coi là đã tới sự kiện.
+- Thông tin trên là ảnh chụp đăng ký, không tự chứng minh tỷ lệ tham dự cuối cùng.

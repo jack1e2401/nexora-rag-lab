@@ -1,0 +1,20 @@
+NHẬT KÝ TRIAGE LỖI VÀ YÊU CẦU NGƯỜI DÙNG
+Mã tài liệu: A-MOM-04 | Ngày: 2026-10-21
+NEXORA / DỮ LIỆU NGHIỆP VỤ MÔ PHỎNG
+==========================================================================
+
+CRASH VÀ CẢI TIẾN
+~~~~~~~~~~~~~~~~~
+- Phiên bản Android v0.8.1 ghi nhận 6 lỗi crash độc lập sau hai vòng smoke test.
+- Đến 21/10, 4 lỗi crash đã sửa và QA xác minh; 2 lỗi vẫn đang điều tra.
+- Số 4/6 mô tả crash đã được xác minh sửa, không phải số test cases PASS của toàn dự án.
+- Bộ phận CS ghi nhận người học hỏi về tải video offline, nhưng đó là ý tưởng sản phẩm chứ chưa phải tính năng đã triển khai.
+- Khoa chưa xác nhận chứng chỉ push iOS đã có.
+- Dự kiến QA tổng hợp lại trạng thái beta trong báo cáo ngày 26/10.
+- Không đủ dữ liệu để kết luận số người dùng thực tế bị ảnh hưởng bởi sáu crash trong môi trường sản xuất; đây là smoke test.
+
+GHI CHÚ TỪ TRIAGE
+~~~~~~~~~~~~~~~~~
+- Không được dùng số crash trong bản thử nghiệm để suy ra số lần crash của khách hàng ngoài thị trường.
+- Đề xuất tải offline không đồng nghĩa có cam kết lịch phát hành.
+- Tên trạng thái FIXED/VERIFIED khác với OPEN/INVESTIGATING.
