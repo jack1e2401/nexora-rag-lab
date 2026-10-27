@@ -1,5 +1,7 @@
 # Plain-Text Extraction and Two Chunkers
 
+> Superseded: LLM chunking is out of scope. The current implementation uses fixed-token chunking only; see [the current RAG flow design](2026-10-27-rag-flow-design.md).
+
 **Decision:** Use Tika plain text as the canonical document representation. Compare fixed-token chunking with DeepSeek-based LLM chunking. This decision replaces the extraction and chunking choices in the earlier chunking strategy design.
 
 ## Intent

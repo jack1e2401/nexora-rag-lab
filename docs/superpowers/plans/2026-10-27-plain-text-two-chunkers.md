@@ -1,5 +1,7 @@
 # Plain-Text Extraction and Two Chunkers Implementation Plan
 
+> Superseded: the current RAG lab uses fixed-token chunking only. See [the current plan](2026-10-27-rag-flow.md) and [design](../specs/2026-10-27-rag-flow-design.md).
+
 > **For agentic workers:** Use superpowers:executing-plans to implement this plan task-by-task. Stop after each task for the user's test and code review. Do not commit until the user requests it.
 
 **Goal:** Simplify the lab to Tika plain text and two chunking approaches: fixed-token and DeepSeek LLM.
