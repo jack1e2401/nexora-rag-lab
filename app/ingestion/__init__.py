@@ -1,0 +1,1 @@
+"""Synchronous document ingestion helpers."""
