@@ -3,6 +3,8 @@
 **Date:** 2026-10-26
 **Status:** implementation planning baseline
 
+**Chunking update:** The approved [2026-10-27 chunking strategy comparison design](2026-10-27-nexora-chunking-strategies-design.md) supersedes this document's A/B/C experiment matrix and chunking/evaluation contract. The other stack and scope decisions still apply.
+
 ## Intent
 
 Build a small, inspectable Python lab for learning and measuring retrieval-augmented generation on a real document corpus. A successful run explains, with item-level evidence, why a chunking or retrieval configuration did better or worse on the same questions.
